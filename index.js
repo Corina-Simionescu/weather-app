@@ -1,23 +1,42 @@
-// 17b3bcffdfda47dfa92173733232912
+//3e8a9824c85740a7e4848477293becc3
+
 const input = document.querySelector("input");
 
-async function getData(cityName)
+async function getCityCoordinates(cityName)
 {
-    const response = await fetch("https://api.weatherapi.com/v1/current.json?key=17b3bcffdfda47dfa92173733232912&q=" + cityName);
-    const data = await response.json();
     try
     {
+        const rawData = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&appid=3e8a9824c85740a7e4848477293becc3`)
+        const data = await rawData.json();
+        console.log("getCityCoordinates: ");
+        console.log(data);
         return {
-            temperatureCelsius: data.current.temp_c,
-            realCityName: data.location.name
+            cityLatitude: data[0].lat,
+            cityLongitude: data[0].lon
         }
     }
     catch (error)
     {
-        console.error("Error fetching data: ", error);
+        console.error("Error when fetching the coordinates data: ", error);
         throw error;
     }
+}
 
+async function getCityWeather(cityCoordinates)
+{
+    try
+    {
+        const rawWeatherInfo = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${cityCoordinates.cityLatitude}&lon=${cityCoordinates.cityLongitude}&appid=3e8a9824c85740a7e4848477293becc3&units=metric`);
+        const weatherInfo = await rawWeatherInfo.json();
+        console.log("getCityWeather: ");
+        console.log(weatherInfo);
+        return weatherInfo;
+    }
+    catch (error)
+    {
+        console.error("Error when fetching weather info data: ", error);
+        throw error;
+    }
 }
 
 input.addEventListener("keydown", async (event) =>
@@ -26,24 +45,27 @@ input.addEventListener("keydown", async (event) =>
     {
         event.preventDefault();
         const cityName = input.value;
-        const output = document.querySelector(".output-container");
         try
         {
             if (cityName)
             {
-                const wheatherInfo = await getData(cityName);
+                const cityCoordinates = await getCityCoordinates(cityName);
+                const cityWeather = await getCityWeather(cityCoordinates);
+
+                const outputContainer = document.querySelector(".output-container");
                 const temperature = document.querySelector(".temperature");
                 const city = document.querySelector(".city");
 
-                output.style.display = "flex";
-                temperature.innerHTML = wheatherInfo.temperatureCelsius + " &#8451";
-                city.innerHTML = wheatherInfo.realCityName;
+                outputContainer.style.display = "flex";
+                temperature.innerHTML = cityWeather.main.temp + " &#8451";
+                city.innerHTML = cityWeather.name;
+
             }
         }
         catch (error)
         {
             console.error("Error processing weather data: ", error);
-            output.style.display = "none";
+            outputContainer.style.display = "none";
         }
         finally
         {
