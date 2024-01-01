@@ -36,14 +36,13 @@ input:hover {
     border: none;
 }
 
-.output-container {
+.output-container{
     width: 25vw;
     height: 60vh;
     border-radius: 3vh;
     background-color: white;
     opacity: 0.5;
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
-
 
     display: flex;
     flex-direction: column;
@@ -61,4 +60,21 @@ input:hover {
 
 .output-container .city {
     font-size: 5vmin;
+}
+
+.error-container {
+    width: 30vw;
+    height: 20vh;
+    border-radius: 3vh;
+    background-color: white;
+    opacity: 0.5;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 4vmin;
+
+    display: none;
 }
